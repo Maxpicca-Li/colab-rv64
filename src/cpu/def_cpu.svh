@@ -2,7 +2,14 @@
 `define DEF_CPU
 
 `include "def_common.svh"
-`define ISSUE_NUM 2
+
+// global config
+`define ISSUE_NUM       2
+`define XLEN            64
+`define REG_NUM         32
+`define FIFO_CNT        16
+`define REG_BUS         63:0
+`define RST_PC          0
 
 typedef logic[4:0] cpu_int_t; // interrupt
 typedef logic[6:0] op_t;
@@ -15,6 +22,7 @@ typedef logic[5:0] shamt6_t;
 
 typedef enum logic[6:0] { 
     ALU_NOP = 0,
+    /* I */
     /* algorithm */
     ALU_ADD, ALU_SUB, ALU_SLT, ALU_SLTU, 
     /* logic */
@@ -22,17 +30,22 @@ typedef enum logic[6:0] {
     /* shift */
     ALU_SRL, ALU_SRA, ALU_SLL,
     /* other */
-    ALU_LUI, ALU_JAL
+    ALU_LUI, ALU_JAL,
+    /* M */
+    ALU_MUL, ALU_DIV
 } aluop_t;
 
-//                 {m_rd m_wr alu_ctrl a32  apc  asht,aimm rs1  rs2   rd   br  jump jalr rev }
-`define DECODE_NOP {1'd0,1'd0, ALU_NOP,1'd0,1'd0,1'd0,1'd0,1'd0,1'd0,1'd0,1'd0,1'd0,1'd0,1'd0}
-`define DECODE_RI  {1'd0,1'd0, ALU_NOP,1'd0,1'd0,1'd0,1'd0,1'd0,1'd0,1'd0,1'd0,1'd0,1'd0,1'd1}
+//                 {m_rd m_wr alu_ctrl a32  ahi  asg1 asg2 apc  asht,aimm rs1  rs2   rd   br  jump jalr rev }
+`define DECODE_NOP {1'd0,1'd0, ALU_NOP,1'd0,1'd0,1'd0,1'd0,1'd0,1'd0,1'd0,1'd0,1'd0,1'd0,1'd0,1'd0,1'd0,1'd0}
+`define DECODE_RI  {1'd0,1'd0, ALU_NOP,1'd0,1'd0,1'd0,1'd0,1'd0,1'd0,1'd0,1'd0,1'd0,1'd0,1'd0,1'd0,1'd0,1'd1}
 typedef struct packed {
     logic       mem_read;   // for memory enable and forward logic
     logic       mem_write;  // for result mux at wb stage
     aluop_t     alu_op;
     logic       alu_32;     // alu sign ext 32
+    logic       alu_hi;     // res: 1 hi/remainder; 0 lo/quotient
+    logic       alu_sign1;  // for mul/div operator
+    logic       alu_sign2;  // for mul/div operator
     logic       alu_pc;     // alu port a. 1: pc  0: rs1
     logic       alu_shamt;
     logic       alu_imm;    // alu port b. 1: imm 0: rs2

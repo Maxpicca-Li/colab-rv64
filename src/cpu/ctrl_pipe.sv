@@ -3,6 +3,7 @@
 module ctrl_pipe(
     input  logic rst,
     input  logic                id_is_transfer,
+    input  logic                ex_alu_stall,
     input  decode_sign_t [1:0]  id_decode_sign,
     input  decode_sign_t [1:0]  ex_decode_sign,
     
@@ -16,7 +17,7 @@ module ctrl_pipe(
     
     always_comb begin
         stall_from_id = 0;
-        stall_from_ex = 0;
+        stall_from_ex = ex_alu_stall;
         stall_from_mm = 0;
         for(integer i=0;i<`ISSUE_NUM;++i) begin
             stall_from_id |= ex_decode_sign[i].mem_read && (

@@ -2,10 +2,13 @@
 `include "def_inst.svh"
 
 module pipe_ex(
+    input                       clk,
+    input                       rst,
     input  pipe_entry_t [1:0]   ex_pipe,
     input  decode_sign_t [1:0]  ex_decode_sign,
     input  id2ex_t [1:0]        ex_get,
     
+    output logic                alu_stall,
     output mempack_t            ex_mempack,
     output regpack_t [1:0]      ex_put
 );
@@ -18,7 +21,7 @@ for(genvar i=0;i<`ISSUE_NUM;++i) begin
 end
 
 
-// ALU
+// ALU: Arithmetic and Logic Unit
 data_t[1:0] alu_a, alu_b;
 for(genvar i=0;i<`ISSUE_NUM;++i) begin
     mux #(
@@ -42,15 +45,22 @@ for(genvar i=0;i<`ISSUE_NUM;++i) begin
     );
 
     alu u_alu(
+        .clk(clk),
+        .rst(rst),
+        .except(except),
         .a_i(alu_a[i]),
         .b_i(alu_b[i]),
         .word32(ex_decode_sign[i].alu_32),
+        .get_hi(ex_decode_sign[i].alu_hi),
+        .sign1(ex_decode_sign[i].alu_sign1),
+        .sign2(ex_decode_sign[i].alu_sign2),
         .aluop(ex_decode_sign[i].alu_op),
+        .alu_stall(alu_stall),
         .res_o(ex_put[i].res)
     );
 end
 
-// MEM
+// AGU: Address Generate Unit
 always_comb begin
     ex_mempack = '0;
     for(integer i=0;i<`ISSUE_NUM;++i) begin

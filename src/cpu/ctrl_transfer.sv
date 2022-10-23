@@ -2,6 +2,7 @@
 `include "def_cpu.svh"
 `include "def_inst.svh"
 
+// BRU: BRanch Unit
 module ctrl_transfer(
     input  decode_sign_t [1:0]  decode_sign,
     input  fifo_ctrl_t          fifo_ctrl,

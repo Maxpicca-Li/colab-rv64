@@ -48,6 +48,15 @@
 `define OPCODE_OP       7'b0110011 // Interger Computational-Regist
 `define OPCODE_OPIMM32  7'b0011011 // RV64I: ADDIW,SLLIW,SRLIW,SRAIW
 `define OPCODE_OP32     7'b0111011 // RV64I: ADDW,SUBW,SLLW,SRLW,SRAW
+    `define FUNCT7_MULDIV   7'b0000001
+        `define FUNCT3_MUL      3'b000
+        `define FUNCT3_MULH     3'b001
+        `define FUNCT3_MULHSU   3'b010
+        `define FUNCT3_MULHU    3'b011
+        `define FUNCT3_DIV      3'b100
+        `define FUNCT3_DIVU     3'b101
+        `define FUNCT3_REM      3'b110
+        `define FUNCT3_REMU     3'b111
     // ALU_Funct3 {
     `define FUNCT3_ADD_SUB  3'b000
     `define FUNCT3_SLL      3'b001
@@ -58,15 +67,11 @@
     `define FUNCT3_OR       3'b110
     `define FUNCT3_AND      3'b111
     // ALU_funct3 }
-    // ALU_Funct7 {
-    `define FUNCT7_NORMAL   7'd0
-    `define FUNCT7_SUB      7'b0100000
-    `define FUNCT7_SRA      7'b0100000
-    // ALU_Funct7 }
-    // ALU_Funct6 {
-    `define FUNCT6_NORMAL   6'd0
-    `define FUNCT6_SRA      6'b010000
-    // ALU_Funct7 }
+        `define FUNCT7_NORMAL   7'd0
+        `define FUNCT7_SUB      7'b0100000
+        `define FUNCT7_SRA      7'b0100000
+        `define FUNCT6_NORMAL   6'd0
+        `define FUNCT6_SRA      6'b010000
 `define OPCODE_FENCE        7'b0001111
 `define OPCODE_SYSTEM       7'b1110011
 // RV64I }

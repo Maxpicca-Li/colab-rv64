@@ -16,6 +16,7 @@ fifo_ctrl_t         fifo_ctrl;
 mempack_t           ex_mempack, mm_mempack;
 
 logic               id_is_transfer;
+logic               ex_alu_stall;
 logic[1:0]          issue_en;
 pipe_entry_t [1:0]  id_pipe, ex_pipe, mm_pipe, wb_pipe;
 decode_sign_t [1:0] id_decode_sign, ex_decode_sign, mm_decode_sign, wb_decode_sign;
@@ -87,10 +88,13 @@ for (genvar i=0;i<`ISSUE_NUM;++i) begin
 end
 
 pipe_ex u_pipe_ex(
+    .clk(clk),
+    .rst(rst),
     .ex_pipe(ex_pipe),
     .ex_decode_sign(ex_decode_sign),
     .ex_get(ex_get),
     
+    .alu_stall(ex_alu_stall),
     .ex_mempack(ex_mempack),
     .ex_gut(ex_gut)
 );

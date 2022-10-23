@@ -8,9 +8,11 @@ typedef logic [7:0]     uint8_t;
 typedef logic [15:0]    uint16_t;
 typedef logic [31:0]    uint32_t;
 typedef logic [63:0]    uint64_t;
+typedef logic [127:0]   uint128_t;
 typedef uint32_t        inst_t;
 typedef uint64_t        addr_t;
 typedef uint64_t        data_t;
+typedef uint128_t       hilo_t;
 
 interface cpu_ibus_if();
     logic        ena;
