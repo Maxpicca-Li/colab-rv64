@@ -26,6 +26,8 @@ wire out_sign = a_sign ^ b_sign;
 data_t cal_a = a_sign ? -a : a;
 data_t cal_b = b_sign ? -b : b;
 
+// TODO: SLL optimize, but here both SLL and MUL need 2 cycle, so SLL may be unuseful.
+
 always_ff @(posedge clk) begin
     if (rst) begin
         ready <= 0;

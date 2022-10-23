@@ -18,7 +18,7 @@ module div(
     output data_t   result_o
 );
 
-enum { IDLE, DIV_BY_ZERO, DIV_OVERFLOW,DIV_ON, SAVE_RESULT } state;
+enum { IDLE, DIV_BY_ZERO, DIV_OVERFLOW, DIV_SRA, DIV_ON, SAVE_RESULT } state;
 
 wire   a_sign = sign1 && a[`XLEN-1]; // 1: negative; 0: positive
 wire   b_sign = sign2 && b[`XLEN-1];
@@ -36,6 +36,10 @@ data_t quo_res, rem_res;
 assign subtract = {1'b0,dividend[2*`XLEN-1:`XLEN]} - {1'b0,divisor};
 assign result_o = get_hi ? rem_res : quo_res;
 
+data_t sra_quo = a >>> b; // arithmetic shift
+data_t sra_rem_tmp = a & (b-1);
+data_t sra_rem = rem_sign ^ sra_rem_tmp[`XLEN-1] ? -sra_rem_tmp : sra_rem_tmp;
+
 always_ff @ (posedge clk) begin
     if (rst) begin
         state <= IDLE;
@@ -50,6 +54,8 @@ always_ff @ (posedge clk) begin
                         state <= DIV_BY_ZERO;
                     end else if(sign1 && sign2 && (&a==1) && b==-1) begin
                         state <= DIV_OVERFLOW;
+                    end else if(!b_sign && ((b & (b - 1)) == 0)) begin // precondition: b is positive number
+                        state <= DIV_SRA;
                     end else begin
                         state <= DIV_ON;
                         cnt <= '0;
@@ -59,7 +65,7 @@ always_ff @ (posedge clk) begin
                 end else begin
                     ready <= 0;
                     {rem_res, quo_res} <= '0;
-                end          	
+                end
             end
             DIV_BY_ZERO: begin
                 dividend <= {a,1'b0,{`XLEN{1'b1}}};
@@ -67,6 +73,10 @@ always_ff @ (posedge clk) begin
             end
             DIV_OVERFLOW: begin
                 dividend <= {{`XLEN{1'b0}},1'b0,a};
+                state <= SAVE_RESULT;
+            end
+            DIV_SRA: begin
+                dividend <= {sra_rem,1'b0,sra_quo};
                 state <= SAVE_RESULT;
             end
             DIV_ON: begin
