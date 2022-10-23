@@ -30,7 +30,7 @@ always_comb begin
     decode_sign = `DECODE_NOP;
     imm = 0;
     shamt = 0;
-    unique casex (opcode)
+    unique casez (opcode)
         `OPCODE_LUI: begin
             decode_sign.alu_op = ALU_LUI;
             decode_sign.alu_imm = 1;
@@ -76,7 +76,7 @@ always_comb begin
                 default: decode_sign.reversed = 1;
             endcase
         end
-        `OPCODE_ICI: begin
+        `OPCODE_OPIMM: begin
             imm = imm_i;
             shamt = shamt6;
             unique casez(funct3)
@@ -131,7 +131,7 @@ always_comb begin
                 default: decode_sign.reversed = 1;
             endcase
         end
-        `OPCODE_ICI32: begin
+        `OPCODE_OPIMM32: begin
             imm = imm_i;
             shamt = shamt5;
             decode_sign.alu_32 = 1;
@@ -157,7 +157,7 @@ always_comb begin
                 default: decode_sign.reversed = 1;
             endcase
         end
-        `OPCODE_ICR: begin
+        `OPCODE_OP: begin
             unique casez(funct3)
                 `FUNCT3_ADD_SUB: begin
                     decode_sign.alu_op = instr[30] ? ALU_SUB : ALU_ADD;
@@ -210,7 +210,7 @@ always_comb begin
                 default: decode_sign.reversed = 1;
             endcase
         end
-        `OPCODE_ICR32: begin
+        `OPCODE_OP32: begin
             decode_sign.alu_32 = 1;
             unique casez(funct3)
                 `FUNCT3_ADD_SUB: begin

@@ -2,7 +2,7 @@
 `define DEF_COMMON
 `include "def_config.svh"
 
-// typedef logic [$bits(`REG_WIDTH/8)-1:0] bytecnt_t;
+// typedef logic [$bits(`XLEN/8)-1:0] bytecnt_t;
 typedef logic [2:0]     bytecnt_t;
 typedef logic [7:0]     uint8_t;
 typedef logic [15:0]    uint16_t;

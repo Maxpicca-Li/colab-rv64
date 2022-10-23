@@ -1,3 +1,4 @@
+`include "def_config.svh"
 `include "def_cpu.svh"
 `include "def_inst.svh"
 

@@ -44,10 +44,10 @@
     `define FUNCT3_SW   3'b010
     `define FUNCT3_SD   3'b011 // RV64I
     // Store Funct3 }
-`define OPCODE_ICI      7'b0010011 // Interger Computational-Immdiate
-`define OPCODE_ICR      7'b0110011 // Interger Computational-Regist
-`define OPCODE_ICI32    7'b0011011 // RV64I: ADDIW,SLLIW,SRLIW,SRAIW
-`define OPCODE_ICR32    7'b0111011 // RV64I: ADDW,SUBW,SLLW,SRLW,SRAW
+`define OPCODE_OPIMM    7'b0010011 // Interger Computational-Immdiate
+`define OPCODE_OP       7'b0110011 // Interger Computational-Regist
+`define OPCODE_OPIMM32  7'b0011011 // RV64I: ADDIW,SLLIW,SRLIW,SRAIW
+`define OPCODE_OP32     7'b0111011 // RV64I: ADDW,SUBW,SLLW,SRLW,SRAW
     // ALU_Funct3 {
     `define FUNCT3_ADD_SUB  3'b000
     `define FUNCT3_SLL      3'b001

@@ -2,8 +2,6 @@
 `define DEF_CPU
 
 `include "def_common.svh"
-`include "def_config.svh"
-
 `define ISSUE_NUM 2
 
 typedef logic[4:0] cpu_int_t; // interrupt
@@ -54,9 +52,9 @@ typedef struct packed {
 } fifo_ctrl_t;
 
 typedef struct packed {
-    logic [63:0]pc;
-    logic [31:0]instr;
-    logic       valid;
+    addr_t  pc;
+    inst_t  instr;
+    logic   valid;
 } pipe_entry_t;
 
 typedef struct packed {
