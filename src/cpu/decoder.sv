@@ -292,27 +292,72 @@ always_comb begin
         end
         `OPCODE_OP32: begin
             decode_sign.alu_32 = 1;
-            unique casez(funct3)
-                `FUNCT3_ADD_SUB: begin
-                    decode_sign.alu_op = instr[30] ? ALU_SUB : ALU_ADD;
-                    decode_sign.rs1_en = 1;
-                    decode_sign.rs2_en = 1;
-                    decode_sign.rd_en = |rd;
-                end
-                `FUNCT3_SLL: begin
-                    decode_sign.alu_op = ALU_SLL;
-                    decode_sign.rs2_en = 1;
-                    decode_sign.rs1_en = 1;
-                    decode_sign.rd_en = |rd;
-                end
-                `FUNCT3_SRL_SRA: begin
-                    decode_sign.alu_op = instr[30] ? ALU_SRA : ALU_SRL;
-                    decode_sign.rs2_en = 1;
-                    decode_sign.rs1_en = 1;
-                    decode_sign.rd_en = |rd;
-                end
-                default: decode_sign.reversed = 1;
-            endcase
+            if (funct7 == `FUNCT7_MULDIV) begin
+                unique casez(funct3) 
+                    `FUNCT3_MUL: begin
+                        decode_sign.alu_op = ALU_MUL;
+                        decode_sign.alu_sign1 = 1;
+                        decode_sign.alu_sign2 = 1;
+                        decode_sign.rs1_en = 1;
+                        decode_sign.rs2_en = 1;
+                        decode_sign.rd_en = |rd;
+                    end
+                    `FUNCT3_DIV: begin
+                        decode_sign.alu_op = ALU_DIV;
+                        decode_sign.alu_sign1 = 1;
+                        decode_sign.alu_sign2 = 1;
+                        decode_sign.rs1_en = 1;
+                        decode_sign.rs2_en = 1;
+                        decode_sign.rd_en = |rd;
+                    end
+                    `FUNCT3_DIVU: begin
+                        decode_sign.alu_op = ALU_DIV;
+                        decode_sign.rs1_en = 1;
+                        decode_sign.rs2_en = 1;
+                        decode_sign.rd_en = |rd;
+                    end
+                    `FUNCT3_REM: begin
+                        decode_sign.alu_op = ALU_DIV;
+                        decode_sign.alu_hi = 1;
+                        decode_sign.alu_sign1 = 1;
+                        decode_sign.alu_sign2 = 1;
+                        decode_sign.rs1_en = 1;
+                        decode_sign.rs2_en = 1;
+                        decode_sign.rd_en = |rd;
+                    end
+                    `FUNCT3_REMU: begin
+                        decode_sign.alu_op = ALU_DIV;
+                        decode_sign.alu_hi = 1;
+                        decode_sign.rs1_en = 1;
+                        decode_sign.rs2_en = 1;
+                        decode_sign.rd_en = |rd;
+                    end
+                    default: decode_sign.reversed = 1;
+                endcase
+            end
+            else begin
+                unique casez(funct3)
+                    `FUNCT3_ADD_SUB: begin
+                        decode_sign.alu_op = instr[30] ? ALU_SUB : ALU_ADD;
+                        decode_sign.rs1_en = 1;
+                        decode_sign.rs2_en = 1;
+                        decode_sign.rd_en = |rd;
+                    end
+                    `FUNCT3_SLL: begin
+                        decode_sign.alu_op = ALU_SLL;
+                        decode_sign.rs2_en = 1;
+                        decode_sign.rs1_en = 1;
+                        decode_sign.rd_en = |rd;
+                    end
+                    `FUNCT3_SRL_SRA: begin
+                        decode_sign.alu_op = instr[30] ? ALU_SRA : ALU_SRL;
+                        decode_sign.rs2_en = 1;
+                        decode_sign.rs1_en = 1;
+                        decode_sign.rd_en = |rd;
+                    end
+                    default: decode_sign.reversed = 1;
+                endcase
+            end
         end
         `OPCODE_FENCE: begin
             decode_sign = `DECODE_NOP;
